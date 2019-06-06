@@ -1,44 +1,29 @@
 #! /usr/bin/env python
 # coding: utf-8
 
-#mock => webinaire de thierry
+import googlemaps
+from config import constant as const
 
-import requests
-import json
 class Mapsgoogle:
     def __init__(self):
-        self.API_KEY = "AIzaSyBygna5eJyviC7F27gMxtOs_Xs2Bt4bL8k"
+        self.gog = googlemaps.Client(key=const.api_key)
     
     def search_id(self, search):
-        params_get = {
-                    "key": self.API_KEY,
-                    "input": search
-                    }
-        read = requests.get('https://maps.googleapis.com/maps/api/place/queryautocomplete/json',params=params_get)
-        if isinstance(read, requests.models.Response):
-            data = read.json()
-        else:
-            data = read
-        return data["predictions"][0]["place_id"]
+        result = self.gog.places_autocomplete_query(search)
+        return result[0]["place_id"]
 
     def search_info_id(self, id_adresse):
-        params_get = {
-                    "key": self.API_KEY,
-                    "placeid": id_adresse,
-                    "fields": "name,geometry,formatted_address"
-                    }
-
-        read = requests.get('https://maps.googleapis.com/maps/api/place/details/json',params=params_get)
-        data = read.json()
-
-        name = data["result"]["name"]
-        adress = data["result"]["formatted_address"]
-        lat = data["result"]["geometry"]["location"]["lat"]
-        lng = data["result"]["geometry"]["location"]["lng"]
+        result = self.gog.place(id_adresse)
+        name = result["result"]["name"]
+        adress = result["result"]["formatted_address"]
+        lat = result["result"]["geometry"]["location"]["lat"]
+        lng = result["result"]["geometry"]["location"]["lng"]
         return name, adress, lat, lng
 
+
 if __name__ == "__main__":
-    print("pouloulou")
     objmap = Mapsgoogle()
-    search = "openclassrooms"
-    print(objmap.search_id(search))
+    search = "openclassrrom's"
+    test= objmap.search_id(search)
+    name, adress, lat, lng = objmap.search_info_id(test)
+    print(name, adress, lat, lng)
