@@ -8,6 +8,9 @@ verify_ssl = true
 [packages]
 googlemaps = "*"
 pytest = "*"
+pymediawiki = "*"
+coverage = "*"
+pytest-cov = "*"
 
 [requires]
 python_version = "3.6"

@@ -19,9 +19,3 @@ class Parser:
                     phrase_finally.append(mot)
         phrase_finally = str(" ".join(phrase_finally))
         return phrase_finally
-
-if __name__ == "__main__":
-    test= Parser()
-    phrase = "salut les ooo copains } 6 542*21 41"
-    phrase = test.parse_the_phrase(phrase)
-    print(phrase)
