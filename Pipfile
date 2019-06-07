@@ -11,6 +11,8 @@ pytest = "*"
 pymediawiki = "*"
 coverage = "*"
 pytest-cov = "*"
+flake8 = "*"
+pydocstyle = "*"
 
 [requires]
 python_version = "3.6"
