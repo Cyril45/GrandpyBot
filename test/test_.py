@@ -25,6 +25,25 @@ class Testparser:
         parsed = self.parser.parse_the_phrase(self.phrase_test)
         assert parsed == "openclassrooms"
 
+    def testnormalizer(self):
+        normalised = self.parser.normalizer(self.phrase_test)
+        assert normalised == [
+            'salut',
+            'grandpy',
+            'est',
+            'ce',
+            'que',
+            'tu',
+            'connais',
+            'l',
+            'adresse',
+            'd',
+            'openclassrooms']
+
+    def testpercentcorrespondence(self):
+        percentcorrespondence = self.parser.percent_correspondence("grandy")
+        assert percentcorrespondence == 92
+
 
 class TestGoogleMapsearchID:
     """This class allow test the searche ID with api map place."""
@@ -127,7 +146,7 @@ class Testsearchwiki:
 
     def setup_method(self):
         """Initialize Api media_wiki and fake adress for search."""
-        self.wiki = media_wiki.wiki()
+        self.wiki = media_wiki.Wiki()
         self.adress = {
             'num': 7,
             'rue': 'Cité Paradis',
@@ -160,7 +179,7 @@ class Testsearchhistory:
 
     def setup_method(self):
         """Initialize Api media_wiki and name place for search history."""
-        self.wiki = media_wiki.wiki()
+        self.wiki = media_wiki.Wiki()
         self.name = "Cité Paradis"
 
     def testsearchhistory(self, monkeypatch):
@@ -168,12 +187,9 @@ class Testsearchhistory:
         class obj:
             def section(self, data):
                 if data == "Origine du nom":
-                    return "Elle porte ce nom en raison de sa proximité avec\
-                         la rue éponyme."
+                    return "Elle porte ce nom en raison"
                 elif data == "Situation et accès":
-                    return "La cité Paradis est une voie publique située dans \
-                        le 10e arrondissement de Paris. Elle est en forme de \
-                            té, une branche débouche au 43..."
+                    return "La cité Paradis est une ...."
         results = obj()
 
         def mockreturn(request, data):
@@ -182,8 +198,6 @@ class Testsearchhistory:
         monkeypatch.setattr(mediawiki.MediaWiki, 'page', mockreturn)
         search_wiki = self.wiki.search_history(self.name)
         assert search_wiki == "Origine du nom :\n\
-            Elle porte ce nom en raison de sa proximité avec la rue éponyme.\
-            \n\n\nSituation et accès :\n\
-            La cité Paradis est une voie publique située dans le 10e \
-            arrondissement de Paris. Elle est en forme de té, une branche \
-            débouche au 43..."
+Elle porte ce nom en raison\
+\n\n\nSituation et accès :\n\
+La cité Paradis est une ...."

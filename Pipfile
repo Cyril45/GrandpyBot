@@ -13,6 +13,8 @@ coverage = "*"
 pytest-cov = "*"
 flake8 = "*"
 pydocstyle = "*"
+fuzzywuzzy = "*"
+python-levenshtein = "*"
 
 [requires]
 python_version = "3.6"
