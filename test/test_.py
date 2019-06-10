@@ -45,13 +45,14 @@ class Testparser:
         assert percentcorrespondence == 92
 
 
-class TestGoogleMapsearchID:
+class TestGoogleMap:
     """This class allow test the searche ID with api map place."""
 
     def setup_method(self):
         """Initialize Api google map and the name for search."""
         self.GoogleMap = maps.Mapsgoogle()
-        self.name_search = "openclassrooms"
+        self.name = "Openclassrooms"
+        self.idsearch = "ChIJIZX8lhRu5kcRGwYk8Ce3Vc8"
 
     def testsearchid(self, monkeypatch):
         """Using monkeypatch for create mock."""
@@ -68,17 +69,8 @@ class TestGoogleMapsearchID:
             'places_autocomplete_query',
             mockreturn
             )
-        idsearch = self.GoogleMap.search_id(self.name_search)
+        idsearch = self.GoogleMap.search_id(self.name)
         assert idsearch == "ChIJIZX8lhRu5kcRGwYk8Ce3Vc8"
-
-
-class TestGoogleMapsearchPlace:
-    """This class allow test the search detail place with api map place."""
-
-    def setup_method(self):
-        """Initialize Api google map and id place for search."""
-        self.GoogleMap = maps.Mapsgoogle()
-        self.idsearch = "ChIJIZX8lhRu5kcRGwYk8Ce3Vc8"
 
     def testsearchplace(self, monkeypatch):
         """Using monkeypatch for create mock."""
@@ -138,7 +130,7 @@ class TestGoogleMapsearchPlace:
             }
         assert lat == 48.8748465
         assert lng == 2.3504873
-        assert name == "Openclassrooms"
+        assert name == self.name
 
 
 class Testsearchwiki:
@@ -147,22 +139,21 @@ class Testsearchwiki:
     def setup_method(self):
         """Initialize Api media_wiki and fake adress for search."""
         self.wiki = media_wiki.Wiki()
+        self.name = "Openclassrooms"
         self.adress = {
-            'num': 7,
+            'num': '7',
             'rue': 'Cité Paradis',
             'code_postale': '75010',
-            'ville': 'paris'
-        }
+            'ville': 'Paris'
+            }
 
-    def testsearchwik(self, monkeypatch):
+    def testsearchwikname(self, monkeypatch):
         """Using monkeypatch for create mock."""
         results = [
-            'Cité Paradis',
-            'Vanessa Paradis',
-            'Paris',
-            'Paradis',
-            'Paradis fiscal',
-            'Les Enfants du paradis'
+            'OpenClassrooms',
+            'Massive Open Online Course',
+            'Zeste de Savoir',
+            'École polytechnique (France)'
             ]
 
         def mockreturn(request, data):
@@ -170,19 +161,34 @@ class Testsearchwiki:
 
         monkeypatch.setattr(mediawiki.MediaWiki, 'search', mockreturn)
 
-        search_wiki = self.wiki.search_wiki(self.adress)
-        assert search_wiki == "Cité Paradis"
+        search_wiki = self.wiki.search_wiki_name(
+            self.name,
+            self.adress["ville"]
+            )
+        assert search_wiki == results
 
+    def testsearchwikadress(self, monkeypatch):
+        """Using monkeypatch for create mock."""
+        results = [
+            'Cité Paradis',
+            'Vanessa Paradis',
+            'Paris',
+            'Paradis',
+            'Les Enfants du paradis'
+        ]
 
-class Testsearchhistory:
-    """This class allow test the search wiki history of place."""
+        def mockreturn(request, data):
+            return results
 
-    def setup_method(self):
-        """Initialize Api media_wiki and name place for search history."""
-        self.wiki = media_wiki.Wiki()
-        self.name = "Cité Paradis"
+        monkeypatch.setattr(mediawiki.MediaWiki, 'search', mockreturn)
 
-    def testsearchhistory(self, monkeypatch):
+        search_wiki = self.wiki.search_wiki_adress(
+            self.adress["rue"],
+            self.adress["ville"]
+            )
+        assert search_wiki == results
+
+    def testsearchwikdetail(self, monkeypatch):
         """Using monkeypatch for create mock."""
         class obj:
             def section(self, data):
@@ -190,14 +196,46 @@ class Testsearchhistory:
                     return "Elle porte ce nom en raison"
                 elif data == "Situation et accès":
                     return "La cité Paradis est une ...."
-        results = obj()
 
-        def mockreturn(request, data):
-            return results
+            @property
+            def categories(self):
+                return [
+                    'Catégorie:Plate-forme pédagogique',
+                    'Catégorie:Site web en français',
+                    'Catégorie:Site web français',
+                    'Catégorie:Site web sur les sciences'
+                    ]
 
-        monkeypatch.setattr(mediawiki.MediaWiki, 'page', mockreturn)
-        search_wiki = self.wiki.search_history(self.name)
-        assert search_wiki == "Origine du nom :\n\
-Elle porte ce nom en raison\
-\n\n\nSituation et accès :\n\
-La cité Paradis est une ...."
+        search_result = """Origine du nom :\nElle porte ce nom en raison\n\n\n\
+Situation et accès :\nLa cité Paradis est une ...."""
+        results1 = [
+            'OpenClassrooms',
+            'Massive Open Online Course',
+            'Zeste de Savoir',
+            'École polytechnique (France)'
+            ]
+
+        results2 = [
+            'Cité Paradis',
+            'Vanessa Paradis',
+            'Paris',
+            'Paradis',
+            'Les Enfants du paradis'
+        ]
+        results3 = obj()
+
+        def mockreturn1(request, name, adress):
+            return results1
+
+        def mockreturn2(request, name, adress):
+            return results2
+
+        def mockreturn3(request, x):
+            return results3
+
+        monkeypatch.setattr(media_wiki.Wiki, 'search_wiki_name', mockreturn1)
+        monkeypatch.setattr(media_wiki.Wiki, 'search_wiki_adress', mockreturn2)
+        monkeypatch.setattr(mediawiki.MediaWiki, 'page', mockreturn3)
+
+        search_wiki = self.wiki.search_history(self.name, self.adress)
+        assert search_wiki == search_result

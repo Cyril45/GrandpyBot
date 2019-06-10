@@ -13,28 +13,55 @@ class Wiki:
         self.wikipedia = mediawiki.MediaWiki()
         self.wikipedia.language = "fr"
 
-    def search_wiki(self, data):
-        """Search establishment in mediawiki."""
-        search = self.wikipedia.search(data["rue"] + " " + data["ville"])
+    def search_wiki_name(self, name, city):
+        """Allow you to search by name and city."""
+        search = self.wikipedia.search(name + " " + city)
         if search:
-            return search[0]
+            return search
         else:
             return None
 
-    def search_history(self, search):
+    def search_wiki_adress(self, street, city):
+        """Allow you to search by street and city."""
+        search = self.wikipedia.search(street + " " + city)
+        print(search)
+        if search:
+            return search
+        else:
+            return None
+
+    def search_history(self, name, adress):
         """Search details of establishment in mediawiki."""
-        history_search = self.wikipedia.page(search)
-        if history_search:
-            returned = ""
-            if history_search.section("Origine du nom"):
-                returned += "Origine du nom :\n" \
-                    + history_search.section("Origine du nom") \
-                    + "\n\n\n"
+        search_by_name = self.search_wiki_name(name, adress["ville"])
+        search_by_adress = self.search_wiki_adress(
+            adress["rue"],
+            adress["ville"]
+            )
 
-            if history_search.section("Situation et accès"):
-                returned += "Situation et accès :\n" \
-                    + history_search.section("Situation et accès")
+        if search_by_name is not None:
+            for x in search_by_name:
+                try:
+                    history_search = self.wikipedia.page(x)
+                    cat = history_search.categories
+                    if any("monument" in i for i in cat):
+                        return history_search.summary
+                except mediawiki.exceptions.PageError:
+                    print("error")
 
-            return returned
-        else:
-            return None
+        if search_by_adress is not None:
+            for x in search_by_adress:
+                try:
+                    history_search = self.wikipedia.page(x)
+                    if history_search:
+                        returned = ""
+                        if history_search.section("Origine du nom"):
+                            returned += "Origine du nom :\n" \
+                                + history_search.section("Origine du nom") \
+                                + "\n\n\n"
+                        if history_search.section("Situation et accès"):
+                            returned += "Situation et accès :\n" \
+                                + history_search.section("Situation et accès")
+                        return returned
+                except mediawiki.exceptions.PageError:
+                    print("error")
+        return None
