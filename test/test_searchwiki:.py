@@ -4,7 +4,7 @@
 """This module contains all tests for the programm."""
 
 
-from backend import media_wiki
+from grandpyApp.static.backend import media_wiki
 
 import mediawiki
 

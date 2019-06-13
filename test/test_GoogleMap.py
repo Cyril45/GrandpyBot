@@ -1,7 +1,7 @@
 #! /usr/bin/env python
 # coding: utf-8
 
-from backend import maps
+from grandpyApp.static.backend import maps
 import googlemaps
 
 
