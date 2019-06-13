@@ -1,0 +1,28 @@
+body{
+    background-color:#91dfe6;
+}
+section
+{
+    min-width:5px;
+    min-height: 5px;
+    max-width:1400px;
+    max-height:600px;
+    background-color:#c0e4a4;
+    margin:auto;
+    border-radius: 10px;
+    padding: 1em;
+    box-shadow:0px 0px 10px #333333;
+    word-wrap: break-word;
+    overflow: auto;
+
+}
+
+#dialogque_grand_pere{
+    color:red;
+    text-align: right;
+}
+#print_user_quest{
+    color:red;
+    text-align: left;
+}
+
