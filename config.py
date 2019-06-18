@@ -14,4 +14,4 @@ stop_word_added = [
     "cherche"
     ]
 
-api_key = "key google api"
+api_key = "AIzaSyBUnEh_DoblBLRi8cH1m0fPu8ShivWc-5w"
