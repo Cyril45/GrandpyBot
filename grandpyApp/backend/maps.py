@@ -3,7 +3,7 @@
 """Contains objects used with api google."""
 
 import googlemaps
-import config as const
+import os
 
 
 class Mapsgoogle:
@@ -11,7 +11,7 @@ class Mapsgoogle:
 
     def __init__(self):
         """Initialize api with the google API key."""
-        self.gog = googlemaps.Client(key=const.api_key)
+        self.gog = googlemaps.Client(key=os.environ['API_KEY'])
 
     def search_id(self, search):
         """Get back id of a place."""

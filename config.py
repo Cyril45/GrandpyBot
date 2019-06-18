@@ -13,5 +13,3 @@ stop_word_added = [
     "bonjour",
     "cherche"
     ]
-
-api_key = "AIzaSyBUnEh_DoblBLRi8cH1m0fPu8ShivWc-5w"
