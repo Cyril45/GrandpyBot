@@ -12,6 +12,7 @@ class Wiki:
         """Initialize api mediawiki and language."""
         self.wikipedia = mediawiki.MediaWiki()
         self.wikipedia.language = "fr"
+        self.url_wik = "https://fr.wikipedia.org/wiki/"
 
     def search_wiki_name(self, name, city):
         """Allow you to search by name and city."""
@@ -44,20 +45,22 @@ class Wiki:
             )
 
         if search_by_name:
-            for x in search_by_name:
-                try:
-                    history_search = self.wikipedia.page(x)
-                    cat = history_search.categories
-                    if any(
-                        "monument" in i
-                        or "Montagne" in i
-                        or "Désert" in i
-                            for i in cat):
-                        return history_search.summary
-                except mediawiki.exceptions.PageError:
-                    pass
-                except mediawiki.exceptions.DisambiguationError:
-                    pass
+            try:
+                history_search = self.wikipedia.page(search_by_name[0])
+                cat = history_search.categories
+                if any(
+                    "monument" in i
+                    or "Montagne" in i
+                    or "Désert" in i
+                        for i in cat):
+                    return '<br /><a href ="\
+                    ' + self.url_wik+history_search.title + '\
+                    "style="color:#2362EB">[Source WikiPédia]\
+                    </a><br />' + history_search.summary
+            except mediawiki.exceptions.PageError:
+                pass
+            except mediawiki.exceptions.DisambiguationError:
+                pass
 
         if search_by_adress:
             for x in search_by_adress:
@@ -74,6 +77,12 @@ class Wiki:
                                 <br />" + history_search.section(
                                     "Situation et accès"
                                     )
+                        if returned == "":
+                            returned = history_search.summary
+                        returned += '<br /><a href ="\
+                            ' + self.url_wik + history_search.title + '\
+                            "style="color:#2362EB">\
+                            [Source WikiPédia]</a><br />'
                         return returned
                 except mediawiki.exceptions.PageError:
                     return None

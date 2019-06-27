@@ -14,7 +14,6 @@ class Testsearchwiki:
 
     def setup_method(self, monkeypatch):
         """Initialize Api media_wiki and fake adress for search."""
-
         self.name = "Openclassrooms"
         self.adress = {
             'num': '7',
@@ -83,7 +82,7 @@ class Testsearchwiki:
         def mockreturn():
             return results2
 
-        monkeypatch.setattr(mediawiki, 'MediaWiki', mockreturn2)
+        monkeypatch.setattr(mediawiki, 'MediaWiki', mockreturn)
 
         self.wiki = media_wiki.Wiki()
         search_wiki = self.wiki.search_wiki_adress(
@@ -100,6 +99,10 @@ class Testsearchwiki:
                     return "Elle porte ce nom en raison"
                 elif data == "Situation et accès":
                     return "La cité Paradis est une ...."
+
+            @property
+            def title(self):
+                return "Un Titre"
 
             @property
             def categories(self):
@@ -122,10 +125,13 @@ class Testsearchwiki:
                     'École polytechnique (France)'
                 ]
 
-        search_result = "Origine du nom de la rue :<br />\
-Elle porte ce nom en raison<br /><br />Situation et accès :\
-                \
-                <br />La cité Paradis est une ...."
+        search_result = 'Origine du nom de la rue :\
+<br />Elle porte ce nom en raison<br />\
+<br />Situation et accès :                                \
+<br />La cité Paradis est une ....<br /><a href ="                            \
+https://fr.wikipedia.org/wiki/Un Titre                            \
+"style="color:#2362EB">                            \
+[Source WikiPédia]</a><br />'
 
         results3 = obj()
 
