@@ -14,7 +14,7 @@ class Parser:
 
     def __init__(self):
         """Initialise the words to delete."""
-        self.stop_words = const.stop_words_genrique + const.stop_word_added
+        self.stop_words = const.STOP_WORDS_GENERIQUE + const.STOP_WORD_ADDED
         self.stop_words = self.normalizer(self.stop_words)
 
     def normalizer(self, receive):

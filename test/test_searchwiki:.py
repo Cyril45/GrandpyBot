@@ -4,7 +4,7 @@
 """This module contains all tests for the programm."""
 
 
-from grandpyApp.backend import media_wiki
+from grandpyapp.backend import media_wiki
 
 import mediawiki
 
@@ -12,9 +12,9 @@ import mediawiki
 class Testsearchwiki:
     """This class allow test the search wiki."""
 
-    def setup_method(self):
+    def setup_method(self, monkeypatch):
         """Initialize Api media_wiki and fake adress for search."""
-        self.wiki = media_wiki.Wiki()
+
         self.name = "Openclassrooms"
         self.adress = {
             'num': '7',
@@ -25,6 +25,17 @@ class Testsearchwiki:
 
     def testsearchwikname(self, monkeypatch):
         """Using monkeypatch for create mock."""
+
+        class obj:
+
+            def search(self, data):
+                return [
+                    'OpenClassrooms',
+                    'Massive Open Online Course',
+                    'Zeste de Savoir',
+                    'École polytechnique (France)'
+                    ]
+
         results = [
             'OpenClassrooms',
             'Massive Open Online Course',
@@ -32,10 +43,13 @@ class Testsearchwiki:
             'École polytechnique (France)'
             ]
 
-        def mockreturn(request, data):
-            return results
+        results2 = obj()
 
-        monkeypatch.setattr(mediawiki.MediaWiki, 'search', mockreturn)
+        def mockreturn():
+            return results2
+
+        monkeypatch.setattr(mediawiki, 'MediaWiki', mockreturn)
+        self.wiki = media_wiki.Wiki()
 
         search_wiki = self.wiki.search_wiki_name(
             self.name,
@@ -45,19 +59,33 @@ class Testsearchwiki:
 
     def testsearchwikadress(self, monkeypatch):
         """Using monkeypatch for create mock."""
+
+        class obj:
+            def search(self, data):
+                return [
+                    'Cité Paradis',
+                    'Vanessa Paradis',
+                    'Paris',
+                    'Paradis',
+                    'Les Enfants du paradis'
+                ]
+
         results = [
-            'Cité Paradis',
-            'Vanessa Paradis',
-            'Paris',
-            'Paradis',
-            'Les Enfants du paradis'
-        ]
+                    'Cité Paradis',
+                    'Vanessa Paradis',
+                    'Paris',
+                    'Paradis',
+                    'Les Enfants du paradis'
+                ]
 
-        def mockreturn(request, data):
-            return results
+        results2 = obj()
 
-        monkeypatch.setattr(mediawiki.MediaWiki, 'search', mockreturn)
+        def mockreturn():
+            return results2
 
+        monkeypatch.setattr(mediawiki, 'MediaWiki', mockreturn2)
+
+        self.wiki = media_wiki.Wiki()
         search_wiki = self.wiki.search_wiki_adress(
             self.adress["rue"],
             self.adress["ville"]
@@ -66,7 +94,7 @@ class Testsearchwiki:
 
     def testsearchwikdetail(self, monkeypatch):
         """Using monkeypatch for create mock."""
-        class obj:
+        class objB:
             def section(self, data):
                 if data == "Origine du nom":
                     return "Elle porte ce nom en raison"
@@ -82,36 +110,30 @@ class Testsearchwiki:
                     'Catégorie:Site web sur les sciences'
                     ]
 
-        search_result = """Origine du nom :\nElle porte ce nom en raison\n\n\n\
-Situation et accès :\nLa cité Paradis est une ...."""
-        results1 = [
-            'OpenClassrooms',
-            'Massive Open Online Course',
-            'Zeste de Savoir',
-            'École polytechnique (France)'
-            ]
+        class obj:
+            def page(self, data):
+                return objB()
 
-        results2 = [
-            'Cité Paradis',
-            'Vanessa Paradis',
-            'Paris',
-            'Paradis',
-            'Les Enfants du paradis'
-        ]
+            def search(self, data):
+                return [
+                    'OpenClassrooms',
+                    'Massive Open Online Course',
+                    'Zeste de Savoir',
+                    'École polytechnique (France)'
+                ]
+
+        search_result = "Origine du nom de la rue :<br />\
+Elle porte ce nom en raison<br /><br />Situation et accès :\
+                \
+                <br />La cité Paradis est une ...."
+
         results3 = obj()
 
-        def mockreturn1(request, name, adress):
-            return results1
-
-        def mockreturn2(request, name, adress):
-            return results2
-
-        def mockreturn3(request, x):
+        def mockreturn3():
             return results3
 
-        monkeypatch.setattr(media_wiki.Wiki, 'search_wiki_name', mockreturn1)
-        monkeypatch.setattr(media_wiki.Wiki, 'search_wiki_adress', mockreturn2)
-        monkeypatch.setattr(mediawiki.MediaWiki, 'page', mockreturn3)
+        monkeypatch.setattr(mediawiki, 'MediaWiki', mockreturn3)
 
+        self.wiki = media_wiki.Wiki()
         search_wiki = self.wiki.search_history(self.name, self.adress)
         assert search_wiki == search_result

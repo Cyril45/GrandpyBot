@@ -1,7 +1,7 @@
 #! /usr/bin/env python
 # coding: utf-8
 
-from grandpyApp.backend import parser
+from grandpyapp.backend import parser
 
 
 class Testparser:

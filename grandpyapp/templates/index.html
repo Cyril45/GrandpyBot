@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+        <link rel="icon" type="image/png" href="../static/img/papy.png" />
+        <title>GrandpyBot  🤖</title>
+        <link rel="stylesheet" href="../static/css/style.css" />
+    </head>
+
+    <body class="bg-light ">
+        <header class="col-12">
+                <h1 class="text-center"><img src="../static/img/papy.png" alt="emoji-robot" class="img-fluid m-3" width="40" />GrandpyBot<img src="../static/img/robot.png" alt="emoji-robot" class="img-fluid m-3" width="40"/></h1>
+                <h2 class="text-center">Le grand-père qui sait tout ou presque !</h2>
+        </header>
+
+        <div class="container-fluid col-8">
+            <section id ="dialogBot" class="border rounded m-3 p-4 shadow bg-white">
+                    <p class="row shadow-sm text-justify col-12 offset-sm-4 col-sm-8 boxbot rounded">
+                        Salut ! Moi c'est GrandpyBot tu peux me demander une adresse et je te dévoilerais son histoire à toi de jouer !
+                    </p>
+            </section>
+
+            <section>
+                    <form action="search" method= "post" class="form-inline">
+                            <input type="search" class="form-control m-3 col-9" placeholder="Exemple: quelle est l'adresse d'openclassrooms" name="search" id="search" required/>
+                            <button type="submit" class="btn btn-primary m-3">Rechercher</button>
+                    </form>
+            </section>
+        </div>
+
+        <footer>
+            <ul class="nav nav-pills nav-justified flex-column flex-md-row">
+                <li class="nav-item"><p>Copyright Simonin Cyril - Tous droits réservés.</p></li>
+                <li class="nav-item"><a href="https://www.linkedin.com/in/cyril-simonin">Mon LinkedIn</a>
+                <li class="nav-item"><a href="https://github.com/Cyril45/P7--GrandpyBot">Projet sur github</a></li>
+            </ul>
+        </footer>
+        
+        <script async defer src="https://maps.googleapis.com/maps/api/js?key={{API_KEY}}"></script>
+        <script src="{{ url_for('static', filename='js/index.js') }}"></script>
+    </body>
+
+</html>

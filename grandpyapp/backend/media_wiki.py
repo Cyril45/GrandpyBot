@@ -15,19 +15,24 @@ class Wiki:
 
     def search_wiki_name(self, name, city):
         """Allow you to search by name and city."""
-        search = self.wikipedia.search(name + " " + city)
-        if search:
-            return search
-        else:
+        try:
+            search = self.wikipedia.search(name + " " + city)
+            if search != []:
+                return search
+            else:
+                return None
+        except ValueError:
             return None
 
     def search_wiki_adress(self, street, city):
         """Allow you to search by street and city."""
-        search = self.wikipedia.search(street + " " + city)
-        print(search)
-        if search:
-            return search
-        else:
+        try:
+            search = self.wikipedia.search(street + " " + city)
+            if search != []:
+                return search
+            else:
+                return None
+        except ValueError:
             return None
 
     def search_history(self, name, adress):
@@ -38,30 +43,38 @@ class Wiki:
             adress["ville"]
             )
 
-        if search_by_name is not None:
+        if search_by_name:
             for x in search_by_name:
                 try:
                     history_search = self.wikipedia.page(x)
                     cat = history_search.categories
-                    if any("monument" in i for i in cat):
+                    if any(
+                        "monument" in i
+                        or "Montagne" in i
+                        or "Désert" in i
+                            for i in cat):
                         return history_search.summary
                 except mediawiki.exceptions.PageError:
-                    print("error")
+                    pass
+                except mediawiki.exceptions.DisambiguationError:
+                    pass
 
-        if search_by_adress is not None:
+        if search_by_adress:
             for x in search_by_adress:
                 try:
                     history_search = self.wikipedia.page(x)
                     if history_search:
                         returned = ""
                         if history_search.section("Origine du nom"):
-                            returned += "Origine du nom :\n" \
-                                + history_search.section("Origine du nom") \
-                                + "\n\n\n"
+                            returned += "Origine du nom de la rue :<br />" \
+                                + history_search.section("Origine du nom")
+
                         if history_search.section("Situation et accès"):
-                            returned += "Situation et accès :\n" \
-                                + history_search.section("Situation et accès")
+                            returned += "<br /><br />Situation et accès :\
+                                <br />" + history_search.section(
+                                    "Situation et accès"
+                                    )
                         return returned
                 except mediawiki.exceptions.PageError:
-                    print("error")
+                    return None
         return None
