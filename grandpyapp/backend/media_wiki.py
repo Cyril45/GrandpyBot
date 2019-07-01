@@ -53,10 +53,11 @@ class Wiki:
                     or "Montagne" in i
                     or "Désert" in i
                         for i in cat):
-                    return '<br /><a href ="\
-                    ' + self.url_wik+history_search.title + '\
-                    "style="color:#2362EB">[Source WikiPédia]\
-                    </a><br />' + history_search.summary
+                    return  history_search.summary + \
+                        '<br /><a href ="\
+                        ' + self.url_wik+history_search.title + '\
+                        "style="color:#2362EB">[Source WikiPédia]\
+                        </a><br />'
             except mediawiki.exceptions.PageError:
                 pass
             except mediawiki.exceptions.DisambiguationError:
