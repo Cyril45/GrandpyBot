@@ -4,18 +4,13 @@ function searchInfos(search){
     let req = new XMLHttpRequest();
     req.open("POST", "/search");
     let section = document.getElementById("dialogBot");
-    let selectLastP = section.firstChild;
-    let wait = document.createElement("div");
-    wait.className = "row col-12 col-sm-4 offset-sm-8 col-md-2 offset-md-10";
-    wait.id = "Wait";
-    section.insertBefore(wait, selectLastP);
+    let firstChildNode = section.firstChild; //Sélection du premier enfant du noeud
+    let wait = document.createElement("div"); //Création d'un div
+    wait.className = "row col-12 col-sm-2 offset-sm-8 col-md-1 offset-md-11 shadow-sm boxbot rounded"; //ajout des classes au div.
+    wait.id = "Wait"; //ajout de l'id wait au div.
+    wait.innerHTML += '<img src="../static/img/wait.gif" alt="Wait" class="img-fluid float-right" width="40" />'; //ajout du gif de chargement.
 
-    let divWait = section.firstChild;
-
-    let pWait = document.createElement("div");
-    pWait.className = "shadow-sm boxbot rounded";
-    pWait.innerHTML += '<img src="../static/img/wait.gif" alt="Wait" class="img-fluid float-right" width="40" />';
-    divWait.appendChild(pWait);
+    section.insertBefore(wait, firstChildNode);
 
     req.addEventListener("load", function () {
         upgradeContainer(req.responseText, user=false)
@@ -32,62 +27,67 @@ function initMap(receiveLat, receiveLng, div) {
 }
 
 function upgradeContainer(receive, user = true) {
+    let section = document.getElementById("dialogBot"); //Sélection de l'element dialogBot.
+    let firstChildNode = section.firstChild; //Sélection du premier enfant du noeud.
+    let contDiv = document.createElement("div"); //Création d'un element div.
+    contDiv.className ="row col-12 p-1 offset-sm-0 col-sm-8 boxbot shadow-sm offset-sm-4 mb-3" //Ajout de toutes les classes
+    section.insertBefore(contDiv, firstChildNode); //Ajout du div créer avant le premier enfant du noeud.
+    let dialog = section.firstChild; //Sélection du div qui vient d'être créé.
+
     if (user){
-        let section = document.getElementById("dialogBot");
-        let selectLastP = section.firstChild;
-        let divDialogUser = document.createElement("div");
-        divDialogUser.className ="row col-12 p-1 offset-sm-0 col-sm-8";
-        
-        section.insertBefore(divDialogUser, selectLastP);
-    
-        let pDialogUser = section.firstChild;
-        let dialogUser = document.createElement("p");
-        dialogUser.className ="text-justify shadow-sm text-left rounded boxuser";
-        dialogUser.innerHTML = receive;
-        pDialogUser.appendChild(dialogUser);
+        contDiv.classList.remove("boxbot","shadow-sm","offset-sm-4","mb-3"); //Supression des classes qui ne sont pas necessaire.
+        let pDialog = document.createElement("p"); //Création d'un paragraphe.
+        pDialog.className ="text-justify shadow-sm text-left rounded boxuser"; //Ajout des classes au paragraphe.
+        pDialog.innerHTML = receive; //Ajout de receive dans le paragraphe au format HTML.
+        dialog.appendChild(pDialog); //Ajout du paragraphe dans le Div
+
     }else if(user === false){
-        let recvjson = JSON.parse(receive);
-        let section = document.getElementById("dialogBot");
-        let selectLastP = section.firstChild;
-        let dialogBotMess = document.createElement("p");
-        dialogBotMess.className = "row shadow-sm text-justify col-12 offset-sm-4 col-sm-8 boxbot rounded";
+        let recvjson = JSON.parse(receive); //Utilisation de json parse pour formaté les données reçu au format Json
+        contDiv.classList.remove("col-12", "p-1", "offset-sm-0", "col-sm-8"); //Supression des classes qui ne sont pas necessaire dans le div.
 
         if (recvjson.existAdress){
-            dialogBotMess.innerHTML += recvjson.phBotAdre + "<br /> <br />";
-            dialogBotMess.innerHTML += recvjson.name +"<br />";
-            dialogBotMess.innerHTML += recvjson.adress.num +" " + recvjson.adress.rue + "<br />";
-            dialogBotMess.innerHTML += recvjson.adress.code_postale +" "+ recvjson.adress.ville + "<br />";
-            section.insertBefore(dialogBotMess, selectLastP);
-            let lastP = section.firstChild;
-            let mapBot = document.createElement("div");
-            let nameid = "map"+i;
-            mapBot.id = nameid;
-            mapBot.className= "row shadow-sm rounded m-3";
-            mapBot.style= "width:100%; height:300px;";
-            lastP.appendChild(mapBot);
+            let pDialog = document.createElement("p"); //Création d'un paragraphe
+            pDialog.innerHTML += recvjson.phBotAdre + "<br /> <br />"; //Ajout de la phrase aléatoire du bot
+            pDialog.innerHTML += recvjson.name +"<br />"; //Ajout du nom de ce qu'ont recherche(ex: openclassrom's)
+            pDialog.innerHTML += recvjson.adress.num +" " + recvjson.adress.rue + "<br />"; //Ajout du numéro de l'adresse et de la rue
+            pDialog.innerHTML += recvjson.adress.code_postale +" "+ recvjson.adress.ville + "<br />"; //Ajout du code postale et de la ville
+            dialog.appendChild(pDialog); //Ajout du paragraphe dans le DIV
+
+            let mapBot = document.createElement("div"); //Création d'un DIV qui continedra la MAP google
+            let nameid = "map"+i; //Formatage du nom de l'id
+            mapBot.id = nameid; //Ajout du nom de l'id
+            mapBot.className= "shadow-sm rounded m-3"; // Ajout des classes
+            mapBot.style= "width:100%; height:300px;"; //Ajout d'un style(dimension de la map)
+            dialog.appendChild(mapBot);// Ajout du div dans le div
+
             if(recvjson.existWiki){
-                dialogBotMess.innerHTML += recvjson.phBotWik + "<br /><br />";
-                dialogBotMess.innerHTML += recvjson.search_detail_wiki;
-                section.insertBefore(dialogBotMess, selectLastP);
+                let pDialog = document.createElement("p");//Création d'un paragraphe
+                pDialog.innerHTML += recvjson.phBotWik + "<br /><br />"; //Ajout de la phrase du bot
+                pDialog.innerHTML += recvjson.search_detail_wiki; // Ajout de la réponse wiki
+                dialog.appendChild(pDialog); // Ajout du paragraphe dans le div.
             }else{
-                dialogBotMess.innerHTML += recvjson.phBotWik;
-                section.insertBefore(dialogBotMess, selectLastP);
+                let pDialog = document.createElement("p");//Création d'un paragraphe
+                pDialog.innerHTML += recvjson.phBotWik;//Ajout de la phrase du bot
+                dialog.appendChild(pDialog);
             }
-            initMap(recvjson.lat, recvjson.lng, nameid);
+            initMap(recvjson.lat, recvjson.lng, nameid); //Initialisation de la map
             i++;
         }else{
-            dialogBotMess.innerHTML += recvjson.phBotAdre;
-            section.insertBefore(dialogBotMess, selectLastP);
+            let pDialog = document.createElement("p");//Création d'un paragraphe
+            pDialog.innerHTML = recvjson.phBotAdre;
+            dialog.appendChild(pDialog);
         }
     }
+    section.scrollLeft = 0;
+    section.scrollTop = 0;
 }
 
 let form = document.querySelector("form");
 let i = 0;
 form.addEventListener("submit", function (e) {
-    let search = form.elements.search.value;
-    upgradeContainer(search);
-    searchInfos(search);
-    e.preventDefault();
-    form.elements.search.value = "";
+    let search = form.elements.search.value; //récupération de l'information inseré par l'utilisateur
+    upgradeContainer(search);//Affichage de la demand user dans sur le site
+    searchInfos(search);// lancement de la recherche
+    e.preventDefault(); //interrompt l'envoi de la requequte post.
+    form.elements.search.value = "";// remise a 0 de la valeur du formulaire.
 });

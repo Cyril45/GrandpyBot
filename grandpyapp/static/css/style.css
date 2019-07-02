@@ -8,7 +8,7 @@
 
 #dialogBot{
   overflow-y:auto;
-  max-height: 800px;
+  max-height: 600px;
   min-height: 300px;
   border-radius: 100px;
 
@@ -28,6 +28,7 @@
   background: #32bf71;
   color: #fff;
   padding: 10px;
+  border-radius: 1rem;
   font-weight: 900;
   font-family: arial;
 }
@@ -35,6 +36,7 @@
   background: #f0f0f0;
   color: rgb(0, 0, 0);
   padding: 10px;
+  border-radius: 1rem;
   font-weight: 900;
   font-family: arial;
 }

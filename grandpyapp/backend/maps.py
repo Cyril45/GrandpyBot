@@ -15,15 +15,18 @@ class Mapsgoogle:
 
     def search_id(self, search):
         """Get back id of a place."""
-        result = self.gog.places_autocomplete_query(search)
-        try:
-            if "place_id" in result[0].keys():
-                return result[0]["place_id"]
-            else:
-                description = result[0]["description"]
-                result = self.gog.places(description)
-                return result["results"][0]["place_id"]
-        except IndexError:
+        if search != "":
+            result = self.gog.places_autocomplete_query(search)
+            try:
+                if "place_id" in result[0].keys():
+                    return result[0]["place_id"]
+                else:
+                    description = result[0]["description"]
+                    result = self.gog.places(description)
+                    return result["results"][0]["place_id"]
+            except IndexError:
+                return None
+        else:
             return None
 
     def search_info_id(self, id_adresse):
