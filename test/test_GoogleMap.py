@@ -39,7 +39,7 @@ class TestGoogleMap:
             'places_autocomplete_query',
             mockreturn
             )
-        monkeypatch.setattr(googlemaps.client, 'Client', mockreturn2)
+        monkeypatch.setattr(googlemaps, 'Client', mockreturn2)
 
         idsearch = self.GoogleMap.search_id(self.name)
         assert idsearch == "ChIJIZX8lhRu5kcRGwYk8Ce3Vc8"
